@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anfragen Tool</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">ANFRAGEN TOOL</div>
+            <div class="search-bar">
+                <input type="search" placeholder="Suchen...">
+            </div>
+            <div class="user-profile">
+                <span>Denis Radau</span>
+                <div class="user-initials" style="background-color: var(--color-denis);">DR</div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="app-sidebar">
+            <nav>
+                <ul>
+                    <li class="active" data-view="dashboard"><a href="#">Dashboard</a></li>
+                    <li data-view="neue-anfrage"><a href="#">Neue Anfrage</a></li>
+                    <li><a href="#">Meine Anfragen</a></li>
+                    <li><a href="#">Alle Anfragen</a></li>
+                    <li><a href="#">Berichte</a></li>
+                    <li><a href="#">Einstellungen</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="app-main" id="main-content">
+
+            <!-- Dashboard View (Initially Visible) -->
+            <div id="view-dashboard" class="view active">
+                <h1>Dashboard</h1>
+
+                <!-- Stats Overview -->
+                <section class="stats-overview">
+                    <div class="stat-card">
+                        <h2>Offene Anfragen</h2>
+                        <p><span class="count">24</span> <span class="change">+3 Überfällig</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <h2>Angebote gesendet</h2>
+                        <p><span class="count">18</span> <span class="change neutral">Letzte 7 Tage</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <h2>Aufträge erhalten</h2>
+                        <p><span class="count">7</span> <span class="change neutral">Letzte 7 Tage</span></p>
+                    </div>
+                     <div class="stat-card">
+                        <h2>Aufträge nicht erhalten</h2>
+                        <p><span class="count">5</span> <span class="change neutral">Letzte 7 Tage</span></p>
+                    </div>
+                </section>
+
+                <!-- Filters and Actions -->
+                <section class="filter-actions">
+                    <div class="filters">
+                        <label>Status:
+                            <select id="filter-status">
+                                <option value="alle">Alle</option>
+                                <option value="neu">Neu</option>
+                                <option value="überfällig">Überfällig</option>
+                                <option value="termin_vereinbart">Termin vereinbart</option>
+                                <option value="angebot_gesendet">Angebot gesendet</option>
+                                <!-- Add more statuses as needed -->
+                            </select>
+                        </label>
+                        <label>Mitarbeiter:
+                            <select id="filter-mitarbeiter">
+                                <option value="alle">Alle</option>
+                                <option value="dr">Denis</option>
+                                <option value="tg">Thomas</option>
+                                <option value="mk">Michael</option>
+                                <option value="sk">Sarah</option>
+                                <option value="unzugewiesen">Unzugewiesen</option>
+                                <!-- Add more employees -->
+                            </select>
+                        </label>
+                         <label>Quelle:
+                            <select id="filter-quelle">
+                                <option value="alle">Alle</option>
+                                <option value="akquise">Akquisekunden</option>
+                                <option value="email">Email</option>
+                                <option value="telefon">Telefon</option>
+                                <option value="trustlocal">Trust Local</option>
+                                <option value="11880">11880</option>
+                            </select>
+                        </label>
+                        <label>Datum:
+                            <select id="filter-datum">
+                                <option value="30">Letzte 30 Tage</option>
+                                <option value="7">Letzte 7 Tage</option>
+                                <option value="heute">Heute</option>
+                                <option value="alle">Alle</option>
+                            </select>
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" id="btn-neue-anfrage-from-dash">+ Neue Anfrage</button>
+                </section>
+
+                <!-- Request Table -->
+                <section class="request-table-section">
+                    <table class="request-table">
+                        <thead>
+                            <tr>
+                                <th>Datum</th>
+                                <th>Kunde/Quelle</th>
+                                <th>Objekt</th>
+                                <th>Beschreibung</th>
+                                <th>Status</th>
+                                <th>Mitarbeiter</th>
+                                <th>Aktion</th>
+                            </tr>
+                        </thead>
+                        <tbody id="request-table-body">
+                            <!-- Rows will be inserted by JavaScript -->
+                        </tbody>
+                    </table>
+                    <div class="pagination">
+                        <span id="pagination-info">Zeige 1-5 von 24 Anfragen</span>
+                        <button id="prev-page" disabled>&lt;</button>
+                        <span id="current-page">1</span>
+                        <button id="next-page">&gt;</button>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Neue Anfrage View (Initially Hidden) -->
+            <div id="view-neue-anfrage" class="view">
+                <h1>Neue Anfrage erstellen</h1>
+                <form id="form-neue-anfrage">
+                    <fieldset>
+                        <legend>Kundeninformationen</legend>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="anfragequelle">Anfragequelle *</label>
+                                <select id="anfragequelle" required>
+                                    <option value="akquise">Akquisekunden</option>
+                                    <option value="email">Email</option>
+                                    <option value="telefon">Telefon</option>
+                                    <option value="trustlocal">Trust Local</option>
+                                    <option value="11880">11880</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="kundenname">Kundenname *</label>
+                                <input type="text" id="kundenname" placeholder="Name eingeben..." required>
+                            </div>
+                             <div class="form-group">
+                                <label for="anfragedatum">Anfragedatum *</label>
+                                <input type="date" id="anfragedatum" required>
+                            </div>
+                        </div>
+                         <div class="form-row">
+                             <div class="form-group">
+                                <label for="email">E-Mail</label>
+                                <input type="email" id="email" placeholder="E-Mail eingeben...">
+                            </div>
+                            <div class="form-group">
+                                <label for="telefon">Telefon</label>
+                                <input type="tel" id="telefon" placeholder="Telefonnummer eingeben...">
+                            </div>
+                            <div class="form-group">
+                                <label for="ansprechpartner">Ansprechpartner</label>
+                                <input type="text" id="ansprechpartner" placeholder="Name eingeben...">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Objektinformationen</legend>
+                         <div class="form-row">
+                            <div class="form-group">
+                                <label for="stadt">Stadt *</label>
+                                <input type="text" id="stadt" placeholder="Stadt eingeben..." required>
+                            </div>
+                            <div class="form-group">
+                                <label for="stadtteil">Stadtteil</label>
+                                <input type="text" id="stadtteil" placeholder="Stadtteil eingeben...">
+                            </div>
+                            <div class="form-group">
+                                <label for="flaeche">Fläche (qm)</label>
+                                <input type="number" id="flaeche" placeholder="Fläche eingeben...">
+                            </div>
+                        </div>
+                         <div class="form-row">
+                             <div class="form-group full-width">
+                                <label for="adresse">Adresse</label>
+                                <input type="text" id="adresse" placeholder="Straße und Hausnummer eingeben...">
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>Anfrageinformationen</legend>
+                        <div class="form-row">
+                             <div class="form-group">
+                                <label for="art-reinigung">Art der Reinigung *</label>
+                                <select id="art-reinigung" required>
+                                    <option value="unterhaltsreinigung">Unterhaltsreinigung</option>
+                                    <option value="glasreinigung">Glasreinigung</option>
+                                    <option value="grundreinigung">Grundreinigung</option>
+                                    <option value="sonderreinigung">Sonderreinigung</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="zustaendiger-mitarbeiter">Zuständiger Mitarbeiter</label>
+                                <select id="zustaendiger-mitarbeiter">
+                                    <option value="unzugewiesen">Nicht zugewiesen</option>
+                                    <option value="dr">Denis Radau</option>
+                                    <option value="tg">Thomas</option>
+                                    <option value="mk">Michael</option>
+                                    <option value="sk">Sarah</option>
+                                </select>
+                            </div>
+                             <div class="form-group">
+                                <label for="prioritaet">Priorität</label>
+                                <select id="prioritaet">
+                                    <option value="normal">Normal</option>
+                                    <option value="hoch">Hoch</option>
+                                    <option value="niedrig">Niedrig</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="beschreibung">Beschreibung *</label>
+                                <textarea id="beschreibung" rows="4" placeholder="Beschreiben Sie die Anfrage detailliert..." required></textarea>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="btn-cancel-neue-anfrage">Abbrechen</button>
+                        <button type="submit" class="btn btn-primary">Speichern</button>
+                    </div>
+                </form>
+            </div>
+
+             <!-- Other views would go here (Meine Anfragen, Berichte, etc.) -->
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
